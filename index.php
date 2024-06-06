@@ -1,6 +1,29 @@
+<?php
+require_once 'connect.php';
+
+// Process login form submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Query the database to authenticate the user
+    $query = "SELECT * FROM users WHERE email = '$email' AND password = '$password'";
+    $result = $conn->query($query);
+
+    if ($result->num_rows > 0) {
+        // User authenticated, redirect to index.html
+        header('Location: dashboard.html');
+        exit;
+    } else {
+        // Invalid credentials, display error message
+        $error = 'Invalid email or password';
+    }
+}
+
+// Display the login form
+?>
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -9,7 +32,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
     <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
 </head>
-
 <body class="bg-gradient-primary">
     <div class="container">
         <div class="row justify-content-center">
@@ -25,14 +47,15 @@
                                     <div class="text-center">
                                         <h4 class="text-dark mb-4">Welcome</h4>
                                     </div>
-                                    <form class="user">
+                                    <form class="user" method="post">
                                         <div class="mb-3"><input class="form-control form-control-user" type="email" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address..." name="email"></div>
                                         <div class="mb-3"><input class="form-control form-control-user" type="password" id="exampleInputPassword" placeholder="Password" name="password"></div>
                                         <div class="mb-3">
                                             <div class="custom-control custom-checkbox small">
                                                 <div class="form-check"><input class="form-check-input custom-control-input" type="checkbox" id="formCheck-1"><label class="form-check-label custom-control-label" for="formCheck-1">Remember Me</label></div>
                                             </div>
-                                        </div><button class="btn btn-primary active d-block btn-user w-100" type="submit" data-bs-toggle="index.html" link="index.html" url="index.html"><a href="index.html" style="color: var(--bs-btn-color);margin: 10px;padding: 0px;width: 10px;">Login</a></button>
+                                        </div><button class="btn btn-primary active d-block btn-user w-100" type="submit">Login</button>
+                                        <?php if (isset($error)) { echo '<p style="color: red;">' . $error . '</p>'; } ?>
                                         <hr style="color: var(--bs-card-bg);">
                                         <hr style="color: var(--bs-card-bg);">
                                     </form>
@@ -50,5 +73,4 @@
     <script src="assets/js/bs-init.js"></script>
     <script src="assets/js/theme.js"></script>
 </body>
-
 </html>
